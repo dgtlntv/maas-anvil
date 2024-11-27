@@ -32,10 +32,10 @@ The following instructions assume that you have three nodes `infra1`, `infra2`, 
 
 In addition, the instructions assume that MAAS Anvil deploys all available components (roles) on all three nodes:
 
--   MAAS region controller
--   MAAS rack controller (agent)
--   PostgreSQL
--   HAProxy
+- MAAS region controller
+- MAAS rack controller (agent)
+- PostgreSQL
+- HAProxy
 
 ### Preparation steps for each node
 
@@ -181,7 +181,7 @@ ubuntu@infra3:~$ maas-anvil cluster join \
 
 If you receive an error message like the following:
 
-```
+```text
 Please enter password for $node on anvil-controller
 ```
 
@@ -209,8 +209,8 @@ If you want to know exactly what configuration options are available and what ef
 
 The configuration options of MAAS Anvil are generally divided into two categories:
 
--   Deployment
--   Software
+- Deployment
+- Software
 
 In the deployment category you can configure general options for deployment, in the software category you can select versions and configuration of all charms used in MAAS Anvil and define how these charms are deployed.
 
@@ -358,7 +358,7 @@ ubuntu@infra1:~$ maas-anvil cluster list
 
 #### `inspect`
 
-If you suspect there is something wrong with your MAAS Anvil cluster you might also want to use the `maas-anvil inspect` command. It creates an introspection report of the current state of the cluster.  
+If you suspect there is something wrong with your MAAS Anvil cluster you might also want to use the `maas-anvil inspect` command. It creates an introspection report of the current state of the cluster.
 You can read more about it in the [CLI reference section](#maas-anvil-inspect).
 
 ```bash
@@ -473,7 +473,7 @@ You can configure the VIP which should be used for the cluster in High availabil
 > [!NOTE]
 > The default values are `tls_mode:"disabled"`, `ssl_cert: ""` and `ssl_key: ""`.
 
-To configure TLS for HAProxy, set `tls_mode` either to `termination` or `passthrough` and configure the path to the SSL certificate and the path to the private key for the SSL certificate. To disable it, set `tls_mode` to `disabled` and provide no SSL certificate or private key.  
+To configure TLS for HAProxy, set `tls_mode` either to `termination` or `passthrough` and configure the path to the SSL certificate and the path to the private key for the SSL certificate. To disable it, set `tls_mode` to `disabled` and provide no SSL certificate or private key.
 If `passthrough` is selected, also provide `ssl_cacert` if you want to use a self-signed certificate.
 
 > [!IMPORTANT]
@@ -518,17 +518,17 @@ juju:
 
 MAAS Anvil is using the following charms:
 
--   [maas-region](https://charmhub.io/maas-region)
--   [maas-agent](https://charmhub.io/maas-agent)
--   [haproxy](https://charmhub.io/haproxy)
--   [postgresql](https://charmhub.io/postgresql)
--   [keepalived](https://charmhub.io/keepalived)
+- [maas-region](https://charmhub.io/maas-region)
+- [maas-agent](https://charmhub.io/maas-agent)
+- [haproxy](https://charmhub.io/haproxy)
+- [postgresql](https://charmhub.io/postgresql)
+- [keepalived](https://charmhub.io/keepalived)
 
 For each of those charms you manually set the
 
--   channel
--   revision
--   custom configuration
+- channel
+- revision
+- custom configuration
 
 Check which configuration can be passed to a charm in their respective documentation.
 
@@ -562,9 +562,9 @@ terraform:
 
 ## CLI interface
 
-### maas-anvil [OPTIONS] COMMAND [ARGS]...
+### maas-anvil [OPTIONS] COMMAND [ARGS]
 
-```
+```text
 Usage: maas-anvil [OPTIONS] COMMAND [ARGS]...
 
   MAAS Anvil is an installer that makes deploying MAAS charms in HA easy.
@@ -600,9 +600,9 @@ Commands:
     juju-login           Logs into the Juju controller used by MAAS Anvil.
 ```
 
-### maas-anvil cluster [OPTIONS] COMMAND [ARGS]...
+### maas-anvil cluster [OPTIONS] COMMAND [ARGS]
 
-```
+```text
   Creates and manages a MAAS Anvil cluster across connected nodes.
 
 Options:
@@ -629,7 +629,7 @@ Example:
 
 ### maas-anvil cluster bootstrap [OPTIONS]
 
-```
+```text
 Usage: maas-anvil cluster bootstrap [OPTIONS]
 
   Bootstraps the first node to initialize a MAAS Anvil cluster.
@@ -655,7 +655,7 @@ Example:
 
 ### maas-anvil cluster add [OPTIONS]
 
-```
+```text
   Generates a token for a new node to join the cluster. Needs to be run on the
   node where the cluster was bootstrapped.
 
@@ -673,7 +673,7 @@ Example:
 
 ### maas-anvil cluster join [OPTIONS]
 
-```
+```text
   Joins the node to a cluster when given a join token. Needs to be run on the
   joining node.
 
@@ -693,12 +693,12 @@ Example:
   and use the token previously created with 'maas-anvil cluster add' on the bootstrap node.
   maas-anvil cluster join  \
   --role database --role region --role agent --role haproxy  \
-  --token $JOINTOKEN
+  --token $JOIN_TOKEN
 ```
 
 ### maas-anvil cluster list [OPTIONS]
 
-```
+```text
   Lists all nodes in the MAAS Anvil cluster. Can be run on any node that is
   connected to an active MAAS Anvil cluster.
 
@@ -713,7 +713,7 @@ Example:
 
 ### maas-anvil cluster remove [OPTIONS]
 
-```
+```text
   Removes a node from the MAAS Anvil cluster. Needs to be run on the bootstrap
   node.
 
@@ -728,7 +728,7 @@ Example:
 
 ### maas-anvil inspect
 
-```
+```text
   Inspects the cluster and reports any issues it finds. A tarball of logs and
   traces is created. You can attach this tarball to an issue filed in the MAAS
   Anvil Github repository. github.com/canonical/maas-anvil
@@ -742,7 +742,7 @@ Options:
 
 ### maas-anvil juju-login
 
-```
+```text
   Logs into the Juju controller used by MAAS Anvil. The login is performed
   using the current host user.
 
@@ -755,9 +755,9 @@ Example:
   maas-anvil juju-login
 ```
 
-### maas-anvil manifest [OPTIONS] COMMAND [ARGS]...
+### maas-anvil manifest [OPTIONS] COMMAND [ARGS]
 
-```
+```text
   Generates and manages manifest files. A manifest file is a declarative YAML
   file with which configurations for a MAAS Anvil cluster deployment can be
   set. The manifest commands are read only.
@@ -778,7 +778,7 @@ Example:
 
 ### maas-anvil manifest generate [OPTIONS]
 
-```
+```text
   Generates a manifest file. Either with the configuration of the currently
   deployed MAAS Anvil cluster or, if no cluster was bootstrapped yet, a
   default configuration.
@@ -796,7 +796,7 @@ Example:
 
 ### maas-anvil manifest list [OPTIONS]
 
-```
+```text
   Lists manifest files that were used in the cluster.
 
 Options:
@@ -810,7 +810,7 @@ Example:
 
 ### maas-anvil manifest show [OPTIONS]
 
-```
+```text
   Shows the contents of a manifest file given an id. Get ids using the
   'manifest list' command. Use '--id=latest' to show the most recently
   committed manifest.
@@ -826,7 +826,7 @@ Example:
 
 ### maas-anvil prepare-node-script [OPTIONS]
 
-```
+```text
   Generates a script to prepare the node for use with MAAS Anvil. This must be
   run on every node on which you want to use MAAS Anvil.
 
@@ -841,7 +841,7 @@ Example:
 
 ### maas-anvil refresh [OPTIONS]
 
-```
+```text
   Updates all charms within their current channel. A manifest file can be
   passed to refresh the deployment with new configuration.
 
