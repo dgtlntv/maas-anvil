@@ -92,7 +92,10 @@ class FormatCommandGroupsGroup(click.Group):
                 "Prepare, create and manage a cluster",
                 [
                     ("prepare-node-script", None),
-                    ("cluster", lambda cmd: cmd.name != "list"),
+                    (
+                        "cluster",
+                        lambda cmd: cmd.name not in ["list", "refresh"],
+                    ),
                 ],
             ),
             (
@@ -103,7 +106,7 @@ class FormatCommandGroupsGroup(click.Group):
                 ],
             ),
             (
-                "Manage and debug the cluster",
+                "Debug the cluster",
                 [
                     ("cluster", lambda cmd: cmd.name == "list"),
                     ("inspect", None),

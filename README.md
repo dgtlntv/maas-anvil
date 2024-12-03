@@ -5,7 +5,7 @@ MAAS Anvil is a snap for managing a charmed (HA) MAAS deployment.
 > [!IMPORTANT]
 > MAAS Anvil is currently in a closed beta stage, approaching production stability
 
-##### MAAS Deployment Components
+**MAAS Deployment Components**
 
 MAAS Anvil is part of the MAAS deployment strategy, which includes:
 
@@ -17,27 +17,27 @@ MAAS Anvil is part of the MAAS deployment strategy, which includes:
 
 MAAS Anvil streamlines the deployment process using MAAS charms. After deployment, the MAAS Terraform provider can be used for further configuration of the active MAAS environment.
 
-# In this documentation
+## In this documentation
 
 | Serve our study                                                      | Serve our work                                                       |
 | :------------------------------------------------------------------- | :------------------------------------------------------------------- |
 | [Tutorials](#tutorial) Hands-on introductions to MAAS Anvil features | [How-to guides](#how-to) Step-by-step guides covering key operations |
 |                                                                      | [Reference](#reference) Technical specifications                     |
 
-# Tutorial
+## Tutorial
 
-## Bootstrap a maas-anvil cluster to learn the basics
+### Bootstrap a maas-anvil cluster to learn the basics
 
 The following instructions assume that you have three nodes `infra1`, `infra2`, `infra3` running Ubuntu 22.04 LTS and their networking is configured correctly.
 
 In addition, the instructions assume that MAAS Anvil deploys all available components (roles) on all three nodes:
 
-- MAAS region controller
-- MAAS rack controller (agent)
-- PostgreSQL
-- HAProxy
+-   MAAS region controller
+-   MAAS rack controller (agent)
+-   PostgreSQL
+-   HAProxy
 
-### Preparation steps for each node
+#### Preparation steps for each node
 
 First, MAAS Anvil needs to be installed and some prerequisites for MAAS Anvil need to be set up. This needs to be done on every node. You can learn more about what `maas-anvil prepare-node-script` does in the [CLI interface reference](#maas-anvil-prepare-node-script-options).
 
@@ -52,7 +52,7 @@ Among other things, the prepare-node-script adds the current user to the `snap_d
 ubuntu@infra{1,2,3}:~$ newgrp snap_daemon
 ```
 
-### Bootstrap the first node
+#### Bootstrap the first node
 
 To initialize the cluster you need to run the bootstrap command on the first node.
 
@@ -65,7 +65,7 @@ ubuntu@infra1:~$ maas-anvil cluster bootstrap \
 > [!NOTE]
 > The `--accept-defaults` flag, as the name suggests, accepts the default configuration of MAAS Anvil. The most important configurations are the [virtual IP](#virtual-ip-vip), [PostgreSQL max_connections](#max-connections) and [TLS termination](#tls). If the `--accept-defaults` flag is omitted, you will be prompted for the configuration during the deployment. If you want to specify the configuration beforehand, you can create a manifest file and provide the manifest file with the `--manifest` flag. [Read more about how to configure your MAAS Anvil deployment with a manifest file](#configure-your-maas-anvil-deployment).
 
-### Add new nodes to the MAAS cluster
+#### Add new nodes to the MAAS cluster
 
 To add additional nodes to the cluster, you must first create join tokens on the initial node on which the cluster was bootstrapped. Make sure that you specify the fully qualified domain name (FQDN) of the joining node in the fqdn flag.
 
@@ -77,7 +77,7 @@ ubuntu@infra1:~$ maas-anvil cluster add --fqdn infra3.
 Token for the Node infra3.: eyJuYW1lIjoibWFhcy00Lm1hYXMiLCJzZWNyZXQiOiI3MmE512342abcdEASWWxOWNlYWNkYmJjMWRmMjk4OThkYWFkYzQzMDAzZjk4NmRkZDI2MWRhYWVkZTIxIiwiZmluZ2VycHJpbnQiOiJlODU5ZmY5NjAwMDU4OGFjZmQ5ZDM0NjFhMDk5NmU1YTU3YjhjN2Q2ZjE4M2NjZDRlOTg2NGRkZjQ3NWMwZWM1Iiwiam9pbl9hZGRyZXNzZXMiOlsiMTAuMjAuMC43OjcwMDAiLCIxMC4yMC4wLjg6NzAwMCJdfQ==
 ```
 
-### Join new nodes to the MAAS cluster
+#### Join new nodes to the MAAS cluster
 
 Now we have to join the cluster on the joining nodes using the `cluster join` command and the join token that was just created. The roles with which a node joins the cluster can be specific to the node and do not have to match those of the bootstrap node. In this example, we opt for a configuration in which every node has every component.
 
@@ -93,7 +93,7 @@ ubuntu@infra3:~$ maas-anvil cluster join \
     --token eyJuYW1lIjoibWFhcy00Lm1hYXMiLCJzZWNyZXQiOiI3MmE512342abcdEASWWxOWNlYWNkYmJjMWRmMjk4OThkYWFkYzQzMDAzZjk4NmRkZDI2MWRhYWVkZTIxIiwiZmluZ2VycHJpbnQiOiJlODU5ZmY5NjAwMDU4OGFjZmQ5ZDM0NjFhMDk5NmU1YTU3YjhjN2Q2ZjE4M2NjZDRlOTg2NGRkZjQ3NWMwZWM1Iiwiam9pbl9hZGRyZXNzZXMiOlsiMTAuMjAuMC43OjcwMDAiLCIxMC4yMC4wLjg6NzAwMCJdfQ==
 ```
 
-### Confirm the cluster status
+#### Confirm the cluster status
 
 If everything went smoothly, the MAAS-Anvil cluster should now be operational. You can check the status of your cluster with the following command. If you would like to learn more about how to monitor an ongoing MAAS Anvil deployment, you can read more about this in the section [Monitor an ongoing deployment](#monitor-an-ongoing-deployment).
 
@@ -108,7 +108,7 @@ ubuntu@infra1:~$ maas-anvil cluster list
 └────────┴────────┴────────┴───────┴──────────┴─────────┘
 ```
 
-### Create MAAS admin user
+#### Create MAAS admin user
 
 To finish up your deployment you can create the MAAS admin user with the following command:
 
@@ -118,13 +118,13 @@ ubuntu@infra1:~$ juju run maas-region/0 create-admin username=admin password=pas
 
 You should now have a running MAAS Anvil HA cluster with one admin user ✨.
 
-# How to
+## How to
 
-## Bootstrap a cluster
+### Bootstrap a cluster
 
 This is a shorter version of the [Bootstrap a maas-anvil cluster to learn the basics](#bootstrap-a-maas-anvil-cluster-to-learn-the-basics) tutorial. You can reference this how to, if you have deployed a MAAS Anvil cluster before, but need a refresh on the process.
 
-### Prepare nodes
+#### Prepare nodes
 
 On each node you need to run the following commands to prepare them for usage with MAAS Anvil:
 
@@ -139,7 +139,7 @@ Among other things, the prepare-node-script adds the current user to the `snap_d
 ubuntu@infra{1,2,3}:~$ newgrp snap_daemon
 ```
 
-### Bootstrap the first node
+#### Bootstrap the first node
 
 To initialize the cluster you need to run the bootstrap command on the first node.
 
@@ -149,7 +149,7 @@ ubuntu@infra1:~$ maas-anvil cluster bootstrap \
     --accept-defaults
 ```
 
-### Add new nodes
+#### Add new nodes
 
 To add a new node to the cluster run the following `cluster add` on the bootstrap node and make note of the tokens.
 
@@ -161,7 +161,7 @@ ubuntu@infra1:~$ maas-anvil cluster add --fqdn infra3.
 Token for the Node infra3.: eyJuYW1lIjoibWFhcy00Lm1hYXMiLCJzZWNyZXQiOiI3MmE512342abcdEASWWxOWNlYWNkYmJjMWRmMjk4OThkYWFkYzQzMDAzZjk4NmRkZDI2MWRhYWVkZTIxIiwiZmluZ2VycHJpbnQiOiJlODU5ZmY5NjAwMDU4OGFjZmQ5ZDM0NjFhMDk5NmU1YTU3YjhjN2Q2ZjE4M2NjZDRlOTg2NGRkZjQ3NWMwZWM1Iiwiam9pbl9hZGRyZXNzZXMiOlsiMTAuMjAuMC43OjcwMDAiLCIxMC4yMC4wLjg6NzAwMCJdfQ==
 ```
 
-### Join new nodes to the cluster
+#### Join new nodes to the cluster
 
 Join the cluster on the joining nodes using the `cluster join` command, the join token that was just created and the roles you want for the specific node.
 
@@ -177,7 +177,7 @@ ubuntu@infra3:~$ maas-anvil cluster join \
     --token eyJuYW1lIjoibWFhcy00Lm1hYXMiLCJzZWNyZXQiOiI3MmE512342abcdEASWWxOWNlYWNkYmJjMWRmMjk4OThkYWFkYzQzMDAzZjk4NmRkZDI2MWRhYWVkZTIxIiwiZmluZ2VycHJpbnQiOiJlODU5ZmY5NjAwMDU4OGFjZmQ5ZDM0NjFhMDk5NmU1YTU3YjhjN2Q2ZjE4M2NjZDRlOTg2NGRkZjQ3NWMwZWM1Iiwiam9pbl9hZGRyZXNzZXMiOlsiMTAuMjAuMC43OjcwMDAiLCIxMC4yMC4wLjg6NzAwMCJdfQ==
 ```
 
-## Log into the Juju controller
+### Log into the Juju controller
 
 If you receive an error message like the following:
 
@@ -201,7 +201,7 @@ user: $user
 
 And use `juju login` as usual.
 
-## Configure your MAAS Anvil deployment
+### Configure your MAAS Anvil deployment
 
 When deploying MAAS in high availability, you may need to configure the maximum connection to the database, the virtual IP, TLS, the charms versions used or even the way a component is deployed. MAAS Anvil allows you to configure all of these things, and this section explains how to do it.
 
@@ -209,20 +209,20 @@ If you want to know exactly what configuration options are available and what ef
 
 The configuration options of MAAS Anvil are generally divided into two categories:
 
-- Deployment
-- Software
+-   Deployment
+-   Software
 
 In the deployment category you can configure general options for deployment, in the software category you can select versions and configuration of all charms used in MAAS Anvil and define how these charms are deployed.
 
-### `--accept-defaults` flag
+#### `--accept-defaults` flag
 
 If you set the `--accept-defaults` flag on the bootstrapped and joining nodes you will accept the default configuration that comes with MAAS Anvil. For all available configuration options you can see the default option in the [Configuration options](#configuration-options) section.
 
-### Configuration prompting
+#### Configuration prompting
 
 If you omit the `--accept-defaults` flag, you will be prompted to enter the deployment configuration during deployment. However, you will not be prompted for the software configuration. The software default settings will still be selected.
 
-### Manifest file
+#### Manifest file
 
 If you want to define the entire configuration of the MAAS Anvil deployment in advance, both deployment and software, you can do so with a manifest file. A manifest file is a yaml file that can be used to specify all configurations for a MAAS Anvil cluster deployment.
 
@@ -317,7 +317,7 @@ If you have already deployed a MAAS Anvil cluster and want to update some config
 ubuntu@infra1:~$ maas-anvil refresh --manifest "$HOME/.config/anvil/manifest.yaml"
 ```
 
-#### Inspecting manifest files
+##### Inspecting manifest files
 
 You can list all previously applied manifest files with the `manifest list` command. It shows you the database ID and the date it was applied to the deployment:
 
@@ -337,11 +337,11 @@ If you want to inspect the contents of one of those manifest files you can show 
 ubuntu@infra1:~$ maas-anvil manifest show --id 0b7bbf2298c2a917dc29fb3d3268366b
 ```
 
-## Monitor an ongoing deployment
+### Monitor an ongoing deployment
 
-### With MAAS Anvil
+#### With MAAS Anvil
 
-#### `cluster list`
+##### `cluster list`
 
 The simplest way to monitor an ongoing MAAS Anvil deployment is with the build in `cluster list` command.
 
@@ -356,7 +356,7 @@ ubuntu@infra1:~$ maas-anvil cluster list
 └────────┴────────┴────────┴───────┴──────────┴─────────┘
 ```
 
-#### `inspect`
+##### `inspect`
 
 If you suspect there is something wrong with your MAAS Anvil cluster you might also want to use the `maas-anvil inspect` command. It creates an introspection report of the current state of the cluster.
 You can read more about it in the [CLI reference section](#maas-anvil-inspect).
@@ -365,7 +365,7 @@ You can read more about it in the [CLI reference section](#maas-anvil-inspect).
 ubuntu@infra1:~$ maas-anvil inspect
 ```
 
-### With Juju
+#### With Juju
 
 As MAAS Anvil uses Juju to deploy MAAS charms under the hood you can also use the `juju status` command to get more information about the status of an ongoing deployment. For example to monitor the juju status every 5 seconds you can run the following command on any node that is part of the MAAS Anvil cluster
 
@@ -373,14 +373,14 @@ As MAAS Anvil uses Juju to deploy MAAS charms under the hood you can also use th
 ubuntu@infra{1,2,3}:~$ juju status --watch 5s
 ```
 
-## Clean up a MAAS Anvil deployment
+### Clean up a MAAS Anvil deployment
 
 > [!IMPORTANT]
 > The clean-up process for MAAS Anvil is not yet fully mature. Proceed with caution and at your own risk.
 
 The most reliable way to clean up a MAAS Anvil deployment at the moment is to redeploy the node on which MAAS Anvil was used. However, if you need to clean up the node without redeploying, you can perform the following steps.
 
-### Removing joined nodes
+#### Removing joined nodes
 
 To get started with cleaning up a MAAS Anvil cluster you need to remove the nodes from the cluster. This command needs to be run on the bootstrap node.
 
@@ -396,26 +396,26 @@ This command will remove the node from the cluster and return commands you need 
 ubuntu@infra2:~$ sudo /sbin/remove-juju-services
 ```
 
-### Cleaning up the bootstrap node
+#### Cleaning up the bootstrap node
 
 Currently, there is no officially supported method to clean up the bootstrap node. Below are two temporary solutions you can consider until we develop a more comprehensive and officially supported cleanup process:
 
 1. Use the `jhack nuke` command. [This tool](https://github.com/canonical/jhack?tab=readme-ov-file#nuke) can help remove Juju deployments more thoroughly. However, use it with caution and only after understanding its implications.
 2. Follow community-sourced cleanup methods. A user has shared their experience and method for cleaning up MAAS Anvil deployments. You can find more information and contribute to the discussion in this GitHub issue: [\#9 Uninstall and cleanup](https://github.com/canonical/maas-anvil/issues/9)
 
-# Reference
+## Reference
 
-## Configuration options
+### Configuration options
 
 This is a reference for the available configuration options and their effects. If you want to generally understand how to configure your MAAS deployment, read the section [Configure your MAAS Anvil deployment](#configure-your-maas-anvil-deployment).
 
-### Deployment
+#### Deployment
 
-#### Bootstrap
+##### Bootstrap
 
 You can configure Management networks shared by hosts (CIDRs, separated by comma). When deploying without a manifest this is automatically set for you.
 
-###### Manifest example snippet
+**Manifest example snippet**
 
 ```yaml
 deployment:
@@ -424,33 +424,33 @@ deployment:
         management_cidr: "10.54.236.0/24"
 ```
 
-#### Postgres
+##### Postgres
 
-##### Max connections
+###### Max connections
 
 > [!NOTE]
 > The default value is `max_connection: "default"`
 
 With this option you can configure the maximum number of concurrent connections to allow access to the database server.
 
-###### Default
+**Default**
 
 `default` applies the default values of PostgreSQL to [max_connections](https://www.postgresql.org/docs/14/runtime-config-connection.html). The default is typically 100 connections, but might be less if your kernel settings will not support it (as determined during initdb).
 
 If you are aiming for MAAS HA though you have to do one of the following:
 
-###### Manually setting max_connections
+**Manually setting max_connections**
 
 If the number of MAAS region nodes is known beforehand, you can calculate the desired max_connections and set them, based on the formula: `max_connections = max(100, 10 + 50 * number_of_region_nodes)`.
 
-###### Dynamic
+**Dynamic**
 
 If the number of MAAS region nodes is not known, you can set `max_connections` to `dynamic` and let MAAS Anvil recalculate the appropriate PostgreSQL `max_connections` every time a region node is joining or leaving the Anvil cluster.
 
 > [!IMPORTANT]
 > With this option set the database will restart with every modification of the MAAS Anvil cluster\!
 
-###### Manifest example snippet
+**Manifest example snippet**
 
 ```yaml
 deployment:
@@ -459,16 +459,16 @@ deployment:
         max_connections: "default"
 ```
 
-#### HA proxy
+##### HA proxy
 
-##### Virtual IP (VIP)
+###### Virtual IP (VIP)
 
 > [!NOTE]
 > The default value is `virtual_ip: ""`, so disabled.
 
 You can configure the VIP which should be used for the cluster in High availability (HA). The Keepalived charm will be installed to enable connecting to the MAAS Anvil HA cluster using the VIP. To enable VIP provide any valid IP, to disable it set an empty value.
 
-##### TLS
+###### TLS
 
 > [!NOTE]
 > The default values are `tls_mode:"disabled"`, `ssl_cert: ""` and `ssl_key: ""`.
@@ -479,7 +479,7 @@ If `passthrough` is selected, also provide `ssl_cacert` if you want to use a sel
 > [!IMPORTANT]
 > The certificate and key must be accessible by the `maas-anvil` snap. Make sure these files are in a directory that can be accessed by `maas-anvil`, such as `$HOME/.config/anvil`.
 
-###### Manifest example snippet
+**Manifest example snippet**
 
 ```yaml
 deployment:
@@ -500,13 +500,13 @@ deployment:
 > [!NOTE]
 > If haproxy is not to be installed, TLS questions will be asked during the maas-region install step. In this case, `termination` is not a valid `tls_mode`.
 
-### Software
+#### Software
 
-#### Juju
+##### Juju
 
 The Juju section allows you to configure extra arguments which will be passed to the `juju bootstrap` (`bootstrap_args`) and `juju enable-ha` (`scale_args`) command. Learn more about [bootstrap arguments](https://juju.is/docs/juju/juju-bootstrap) and [scale arguments](https://juju.is/docs/juju/juju-enable-ha) in the Juju docs.
 
-###### Manifest example snippet
+**Manifest example snippet**
 
 ```yaml
 juju:
@@ -514,25 +514,25 @@ juju:
     scale_args: []
 ```
 
-#### Charms
+##### Charms
 
 MAAS Anvil is using the following charms:
 
-- [maas-region](https://charmhub.io/maas-region)
-- [maas-agent](https://charmhub.io/maas-agent)
-- [haproxy](https://charmhub.io/haproxy)
-- [postgresql](https://charmhub.io/postgresql)
-- [keepalived](https://charmhub.io/keepalived)
+-   [maas-region](https://charmhub.io/maas-region)
+-   [maas-agent](https://charmhub.io/maas-agent)
+-   [haproxy](https://charmhub.io/haproxy)
+-   [postgresql](https://charmhub.io/postgresql)
+-   [keepalived](https://charmhub.io/keepalived)
 
 For each of those charms you manually set the
 
-- channel
-- revision
-- custom configuration
+-   channel
+-   revision
+-   custom configuration
 
 Check which configuration can be passed to a charm in their respective documentation.
 
-###### Manifest example snippet
+**Manifest example snippet**
 
 ```yaml
 charms
@@ -542,11 +542,11 @@ charms
     config: null
 ```
 
-#### Terraform
+##### Terraform
 
 You can configure the Terraform plans MAAS Anvil uses to, for example, change what the final relations of the cluster look like.
 
-###### Manifest example snippet
+**Manifest example snippet**
 
 ```yaml
 terraform:
@@ -560,9 +560,9 @@ terraform:
         source: /snap/maas-anvil/63/etc/deploy-postgresql
 ```
 
-## CLI interface
+### CLI interface
 
-### maas-anvil [OPTIONS] COMMAND [ARGS]
+#### maas-anvil [OPTIONS] COMMAND [ARGS]...
 
 ```text
 Usage: maas-anvil [OPTIONS] COMMAND [ARGS]...
@@ -600,7 +600,7 @@ Commands:
     juju-login           Logs into the Juju controller used by MAAS Anvil.
 ```
 
-### maas-anvil cluster [OPTIONS] COMMAND [ARGS]
+#### maas-anvil cluster [OPTIONS] COMMAND [ARGS]...
 
 ```text
   Creates and manages a MAAS Anvil cluster across connected nodes.
@@ -627,7 +627,7 @@ Example:
   'maas-anvil cluster join' on the joining nodes.
 ```
 
-### maas-anvil cluster bootstrap [OPTIONS]
+#### maas-anvil cluster bootstrap [OPTIONS]
 
 ```text
 Usage: maas-anvil cluster bootstrap [OPTIONS]
@@ -653,7 +653,7 @@ Example:
   --accept-defaults
 ```
 
-### maas-anvil cluster add [OPTIONS]
+#### maas-anvil cluster add [OPTIONS]
 
 ```text
   Generates a token for a new node to join the cluster. Needs to be run on the
@@ -671,7 +671,7 @@ Example:
   maas-anvil cluster add --fqdn infra2.
 ```
 
-### maas-anvil cluster join [OPTIONS]
+#### maas-anvil cluster join [OPTIONS]
 
 ```text
   Joins the node to a cluster when given a join token. Needs to be run on the
@@ -696,7 +696,7 @@ Example:
   --token $JOIN_TOKEN
 ```
 
-### maas-anvil cluster list [OPTIONS]
+#### maas-anvil cluster list [OPTIONS]
 
 ```text
   Lists all nodes in the MAAS Anvil cluster. Can be run on any node that is
@@ -711,7 +711,7 @@ Example:
   maas-anvil cluster list
 ```
 
-### maas-anvil cluster remove [OPTIONS]
+#### maas-anvil cluster remove [OPTIONS]
 
 ```text
   Removes a node from the MAAS Anvil cluster. Needs to be run on the bootstrap
@@ -726,7 +726,7 @@ Example:
   maas-anvil cluster remove --fqdn infra2.
 ```
 
-### maas-anvil inspect
+#### maas-anvil inspect
 
 ```text
   Inspects the cluster and reports any issues it finds. A tarball of logs and
@@ -740,7 +740,7 @@ Options:
   maas-anvil inspect
 ```
 
-### maas-anvil juju-login
+#### maas-anvil juju-login
 
 ```text
   Logs into the Juju controller used by MAAS Anvil. The login is performed
@@ -755,7 +755,7 @@ Example:
   maas-anvil juju-login
 ```
 
-### maas-anvil manifest [OPTIONS] COMMAND [ARGS]
+#### maas-anvil manifest [OPTIONS] COMMAND [ARGS]...
 
 ```text
   Generates and manages manifest files. A manifest file is a declarative YAML
@@ -776,7 +776,7 @@ Example:
   maas-anvil manifest generate
 ```
 
-### maas-anvil manifest generate [OPTIONS]
+#### maas-anvil manifest generate [OPTIONS]
 
 ```text
   Generates a manifest file. Either with the configuration of the currently
@@ -794,7 +794,7 @@ Example:
   maas-anvil manifest generate
 ```
 
-### maas-anvil manifest list [OPTIONS]
+#### maas-anvil manifest list [OPTIONS]
 
 ```text
   Lists manifest files that were used in the cluster.
@@ -808,7 +808,7 @@ Example:
   maas-anvil manifest list
 ```
 
-### maas-anvil manifest show [OPTIONS]
+#### maas-anvil manifest show [OPTIONS]
 
 ```text
   Shows the contents of a manifest file given an id. Get ids using the
@@ -824,7 +824,7 @@ Example:
   maas-anvil manifest show --id=latest
 ```
 
-### maas-anvil prepare-node-script [OPTIONS]
+#### maas-anvil prepare-node-script [OPTIONS]
 
 ```text
   Generates a script to prepare the node for use with MAAS Anvil. This must be
@@ -839,7 +839,7 @@ Example:
   maas-anvil prepare-node-script | bash -x
 ```
 
-### maas-anvil refresh [OPTIONS]
+#### maas-anvil refresh [OPTIONS]
 
 ```text
   Updates all charms within their current channel. A manifest file can be
