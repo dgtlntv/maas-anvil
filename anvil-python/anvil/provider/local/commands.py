@@ -593,7 +593,7 @@ def join(
     cls=FormatEpilogCommand,
     epilog="""
     \b
-    Verify the status of your MAAS Anvil cluster.
+    Verify the status of the MAAS Anvil cluster.
     maas-anvil cluster list
     """,
 )

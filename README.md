@@ -586,7 +586,6 @@ Commands:
     cluster add          Generates a token for a new node to join the cluster.
     cluster join         Joins the node to a cluster when given a join token.
     cluster remove       Removes a node from the MAAS Anvil cluster.
-    cluster refresh      Updates all charms within their current channel.
 
   Configure and update the cluster:
     manifest list        Lists manifest files that were used in the cluster.
@@ -594,7 +593,7 @@ Commands:
     manifest generate    Generates a manifest file.
     refresh              Updates all charms within their current channel.
 
-  Manage and debug the cluster:
+  Debug the cluster:
     cluster list         Lists all nodes in the MAAS Anvil cluster.
     inspect              Inspects the cluster and reports any issues it finds.
     juju-login           Logs into the Juju controller used by MAAS Anvil.
@@ -693,7 +692,7 @@ Example:
   and use the token previously created with 'maas-anvil cluster add' on the bootstrap node.
   maas-anvil cluster join  \
   --role database --role region --role agent --role haproxy  \
-  --token $JOIN_TOKEN
+  --token $JOINTOKEN
 ```
 
 #### maas-anvil cluster list [OPTIONS]
@@ -707,7 +706,7 @@ Options:
   -h, --help                 Show this message and exit.
 
 Example:
-  Verify the status of your MAAS Anvil cluster.
+  Verify the status of the MAAS Anvil cluster.
   maas-anvil cluster list
 ```
 
@@ -760,7 +759,8 @@ Example:
 ```text
   Generates and manages manifest files. A manifest file is a declarative YAML
   file with which configurations for a MAAS Anvil cluster deployment can be
-  set. The manifest commands are read only.
+  set. The manifest commands are read only. A manifest can be applied with
+  "cluster bootstrap" or "cluster refresh".
 
 Options:
   -h, --help  Show this message and exit.
